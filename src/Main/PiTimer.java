@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PiTimer extends JPanel implements ActionListener {
-    //Variable Declaration
-    private static final String TITLE ="Timer", VERID="0.3";
     //Logic Variables
     private int[] times={0,0,0}, timeMax={200,59,59}, savedTimes={0,0,0}, lastTimes={0,0,0};
     private long startTime=-1;
@@ -23,18 +21,14 @@ public class PiTimer extends JPanel implements ActionListener {
     private String[] iButtonStrings ={"Clear","Reset","Start","Stop"};
     private JPanel[] containerPanes =new JPanel[4];
     //Aesthetic Variables
-    private static Font font=new Font("Arial", Font.BOLD, 72);
-    private static Color backgroundColor=Color.decode("#000000"),
-            foregroundColor=Color.decode("#FFFFFF"),
-            transparent=new Color(0,0,0,0);
+    private Font font=new Font("Arial", Font.BOLD, 72);
+    private Color transparent=new Color(0,0,0,0);
     private GridLayout frameLay=new GridLayout(2,1,5,5),
             containerLay[]=new GridLayout[containerPanes.length];
     //Pi Variables
-    private GpioController gpio;
-    private Pin pin;
-    private GpioPinDigitalOutput output;
+    private GpioPinDigitalOutput output=null;
     //Constructor
-    private PiTimer() {
+    public PiTimer(Color backgroundColor, Color foregroundColor) {
         //Initialize Variables
         for(int i=0;i<timeDisplays.length;i++) {
             timeDisplays[i]=new JLabel(String.valueOf(times[i]));
@@ -74,16 +68,6 @@ public class PiTimer extends JPanel implements ActionListener {
             containerPanes[i].setLayout(containerLay[i]);
             containerPanes[i].setFocusable(false);
             containerPanes[i].setBackground(transparent);
-        }
-        //Pi Setup
-        try {
-            gpio = GpioFactory.getInstance(); //Aquired code from: https://dzone.com/articles/simple-steps-to-develop-smart-light-java-amp-iot
-            pin = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_06);
-            output = gpio.provisionDigitalOutputPin(pin, "My Output", PinState.LOW);
-        } catch(Exception e) {
-            gpio=null;
-            pin=null;
-            output=null;
         }
         //Set UI
         try {
@@ -223,8 +207,8 @@ public class PiTimer extends JPanel implements ActionListener {
         timer.start();
         try {
             output.high();
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
     private void stop() {
@@ -232,27 +216,11 @@ public class PiTimer extends JPanel implements ActionListener {
         timer.stop();
         try {
             output.low();
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
-    //Main Method
-    public static void main(String[] args) {
-        PiTimer mainTimer=new PiTimer();
-        PiTimer secondTimer=new PiTimer();
-        JPanel spacer=new JPanel();
-        spacer.setFocusable(false);
-        spacer.setBackground(backgroundColor);
-
-        JFrame mainFrame=new JFrame();
-        mainFrame.setTitle(TITLE+" "+VERID);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        mainFrame.setUndecorated(false);
-        mainFrame.setLayout(new GridLayout(1,3));
-        mainFrame.add(mainTimer);
-        mainFrame.add(spacer);
-        mainFrame.add(secondTimer);
-        mainFrame.setVisible(true);
+    public void setOutput(GpioPinDigitalOutput output) {
+        this.output=output;
     }
 }
