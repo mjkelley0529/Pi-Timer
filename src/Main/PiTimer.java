@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class PiTimer extends JPanel implements ActionListener {
     //Variable Declaration
-    private static final String TITLE ="Timer", VERID="0.2";
+    private static final String TITLE ="Timer", VERID="0.3";
     //Logic Variables
     private int[] times={0,0,0}, timeMax={200,59,59}, savedTimes={0,0,0}, lastTimes={0,0,0};
     private long startTime=-1;
@@ -30,9 +30,9 @@ public class PiTimer extends JPanel implements ActionListener {
     private GridLayout frameLay=new GridLayout(2,1,5,5),
             containerLay[]=new GridLayout[containerPanes.length];
     //Pi Variables
-    private final GpioController gpio = GpioFactory.getInstance(); //Aquired code from: https://dzone.com/articles/simple-steps-to-develop-smart-light-java-amp-iot
-    private Pin pin = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_06);
-    private GpioPinDigitalOutput output = gpio.provisionDigitalOutputPin(pin, "My Output", PinState.HIGH);
+    private GpioController gpio;
+    private Pin pin;
+    private GpioPinDigitalOutput output;
     //Constructor
     private PiTimer() {
         //Initialize Variables
@@ -52,7 +52,6 @@ public class PiTimer extends JPanel implements ActionListener {
                 timeAdjusters[i].setText("\\/");
             }
             timeAdjusters[i].addActionListener(this);
-            timeAdjusters[i].setMultiClickThreshhold(0);
             timeAdjusters[i].setFocusable(false);
             timeAdjusters[i].setFont(font);
             timeAdjusters[i].setBackground(backgroundColor);
@@ -75,6 +74,16 @@ public class PiTimer extends JPanel implements ActionListener {
             containerPanes[i].setLayout(containerLay[i]);
             containerPanes[i].setFocusable(false);
             containerPanes[i].setBackground(transparent);
+        }
+        //Pi Setup
+        try {
+            gpio = GpioFactory.getInstance(); //Aquired code from: https://dzone.com/articles/simple-steps-to-develop-smart-light-java-amp-iot
+            pin = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_06);
+            output = gpio.provisionDigitalOutputPin(pin, "My Output", PinState.LOW);
+        } catch(Exception e) {
+            gpio=null;
+            pin=null;
+            output=null;
         }
         //Set UI
         try {
@@ -212,12 +221,20 @@ public class PiTimer extends JPanel implements ActionListener {
             System.arraycopy(times, 0, lastTimes, 0, times.length);
         });
         timer.start();
-        output.high();
+        try {
+            output.high();
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+        }
     }
     private void stop() {
         interfaceButtons[2].setText(iButtonStrings[2]);
         timer.stop();
-        output.low();
+        try {
+            output.low();
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+        }
     }
     //Main Method
     public static void main(String[] args) {
