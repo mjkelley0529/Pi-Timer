@@ -40,7 +40,7 @@ public class Main {
         mainFrame.setTitle(TITLE+" "+VERID);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        mainFrame.setUndecorated(false);
+        mainFrame.setUndecorated(true);
         mainFrame.setLayout(new GridLayout(1,3));
         mainFrame.add(timers[0]);
         mainFrame.add(spacer);
