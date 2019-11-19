@@ -30,7 +30,7 @@ public class PiTimer extends JPanel implements ActionListener {
     private GridLayout frameLay=new GridLayout(2,1,5,5),
             containerLay[]=new GridLayout[containerPanes.length];
     //Pi Variables
-    private final GpioController gpio = GpioFactory.getInstance();
+    private final GpioController gpio = GpioFactory.getInstance(); //Aquired code from: https://dzone.com/articles/simple-steps-to-develop-smart-light-java-amp-iot
     private Pin pin = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_06);
     private GpioPinDigitalOutput output = gpio.provisionDigitalOutputPin(pin, "My Output", PinState.HIGH);
     //Constructor
