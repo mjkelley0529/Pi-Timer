@@ -9,7 +9,7 @@ import java.awt.*;
 public class Main {
     //Variable Declaration
     private static final String TITLE ="Timer", VERID="0.3";
-    private static final Color bgColor=Color.decode("#000000"), fgColor=Color.decode("FFFFFF");
+    private static final Color bgColor=Color.decode("#000000"), fgColor=Color.decode("#FFFFFF");
     //Main
     public static void main(String[] args) {
         PiTimer[] timers=new PiTimer[2];
