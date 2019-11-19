@@ -21,7 +21,7 @@ public class PiTimer extends JPanel implements ActionListener {
     private String[] iButtonStrings ={"Clear","Reset","Start","Stop"};
     private JPanel[] containerPanes =new JPanel[4];
     //Aesthetic Variables
-    private Font font=new Font("Arial", Font.BOLD, 72);
+    private Font font=new Font("Arial", Font.BOLD, 36);
     private Color transparent=new Color(0,0,0,0);
     private GridLayout frameLay=new GridLayout(2,1,5,5),
             containerLay[]=new GridLayout[containerPanes.length];
@@ -68,17 +68,6 @@ public class PiTimer extends JPanel implements ActionListener {
             containerPanes[i].setLayout(containerLay[i]);
             containerPanes[i].setFocusable(false);
             containerPanes[i].setBackground(transparent);
-        }
-        //Set UI
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available, you can set the GUI to another look and feel.
         }
         //Frame Setup
         setBackground(backgroundColor);

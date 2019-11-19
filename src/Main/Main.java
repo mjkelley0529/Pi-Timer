@@ -12,6 +12,17 @@ public class Main {
     private static final Color bgColor=Color.decode("#000000"), fgColor=Color.decode("#FFFFFF");
     //Main
     public static void main(String[] args) {
+        //Set UI
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // If Nimbus is not available, you can set the GUI to another look and feel.
+        }
         PiTimer[] timers=new PiTimer[2];
         GpioController gpio;
         Pin[] pin=new Pin[timers.length];
