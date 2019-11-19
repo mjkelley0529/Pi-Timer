@@ -1,5 +1,8 @@
 package Main;
 
+import com.pi4j.io.gpio.*;
+import com.pi4j.util.CommandArgumentParser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,18 +29,12 @@ public class PiTimer extends JPanel implements ActionListener {
             transparent=new Color(0,0,0,0);
     private GridLayout frameLay=new GridLayout(2,1,5,5),
             containerLay[]=new GridLayout[containerPanes.length];
+    //Pi Variables
+    private final GpioController gpio = GpioFactory.getInstance();
+    private Pin pin = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_06);
+    private GpioPinDigitalOutput output = gpio.provisionDigitalOutputPin(pin, "My Output", PinState.HIGH);
     //Constructor
     private PiTimer() {
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available, you can set the GUI to another look and feel.
-        }
         //Initialize Variables
         for(int i=0;i<timeDisplays.length;i++) {
             timeDisplays[i]=new JLabel(String.valueOf(times[i]));
@@ -78,6 +75,17 @@ public class PiTimer extends JPanel implements ActionListener {
             containerPanes[i].setLayout(containerLay[i]);
             containerPanes[i].setFocusable(false);
             containerPanes[i].setBackground(transparent);
+        }
+        //Set UI
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // If Nimbus is not available, you can set the GUI to another look and feel.
         }
         //Frame Setup
         setBackground(backgroundColor);
@@ -204,10 +212,12 @@ public class PiTimer extends JPanel implements ActionListener {
             System.arraycopy(times, 0, lastTimes, 0, times.length);
         });
         timer.start();
+        output.high();
     }
     private void stop() {
         interfaceButtons[2].setText(iButtonStrings[2]);
         timer.stop();
+        output.low();
     }
     //Main Method
     public static void main(String[] args) {
