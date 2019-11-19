@@ -21,7 +21,8 @@ public class PiTimer extends JPanel implements ActionListener {
     private String[] iButtonStrings ={"Clear","Reset","Start","Stop"};
     private JPanel[] containerPanes =new JPanel[4];
     //Aesthetic Variables
-    private Font font=new Font("Arial", Font.BOLD, 36);
+    private Font labelFont=new Font("Courier new", Font.BOLD, 32),
+            buttonFont=new Font(labelFont.getName(), Font.PLAIN, 20);
     private Color transparent=new Color(0,0,0,0);
     private GridLayout frameLay=new GridLayout(2,1,5,5),
             containerLay[]=new GridLayout[containerPanes.length];
@@ -33,7 +34,7 @@ public class PiTimer extends JPanel implements ActionListener {
         for(int i=0;i<timeDisplays.length;i++) {
             timeDisplays[i]=new JLabel(String.valueOf(times[i]));
             timeDisplays[i].setFocusable(false);
-            timeDisplays[i].setFont(font);
+            timeDisplays[i].setFont(labelFont);
             timeDisplays[i].setHorizontalAlignment(JTextField.CENTER);
             timeDisplays[i].setBackground(backgroundColor);
             timeDisplays[i].setForeground(foregroundColor);
@@ -47,7 +48,7 @@ public class PiTimer extends JPanel implements ActionListener {
             }
             timeAdjusters[i].addActionListener(this);
             timeAdjusters[i].setFocusable(false);
-            timeAdjusters[i].setFont(font);
+            timeAdjusters[i].setFont(buttonFont);
             timeAdjusters[i].setBackground(backgroundColor);
             timeAdjusters[i].setForeground(foregroundColor);
         }
@@ -55,7 +56,7 @@ public class PiTimer extends JPanel implements ActionListener {
             interfaceButtons[i]=new JButton(iButtonStrings[i]);
             interfaceButtons[i].addActionListener(this);
             interfaceButtons[i].setFocusable(false);
-            interfaceButtons[i].setFont(font);
+            interfaceButtons[i].setFont(buttonFont);
             interfaceButtons[i].setBackground(backgroundColor);
             interfaceButtons[i].setForeground(foregroundColor);
         }
