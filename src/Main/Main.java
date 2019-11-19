@@ -21,7 +21,7 @@ public class Main {
             pin[0] = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_04);
             pin[1] = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_05);
             for(int i=0;i<output.length;i++) {
-                output[i] = gpio.provisionDigitalOutputPin(pin[i], "My Output", PinState.LOW);
+                output[i] = gpio.provisionDigitalOutputPin(pin[i], "My Output", PinState.HIGH);
             }
         } catch(Exception e) {
             gpio=null;

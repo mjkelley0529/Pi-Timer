@@ -206,7 +206,7 @@ public class PiTimer extends JPanel implements ActionListener {
         });
         timer.start();
         try {
-            output.high();
+            output.low();
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -215,7 +215,7 @@ public class PiTimer extends JPanel implements ActionListener {
         interfaceButtons[2].setText(iButtonStrings[2]);
         timer.stop();
         try {
-            output.low();
+            output.high();
         } catch(Exception e) {
             e.printStackTrace();
         }
