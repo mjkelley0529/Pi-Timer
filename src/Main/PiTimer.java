@@ -55,6 +55,7 @@ public class PiTimer extends JPanel implements ActionListener {
                 timeAdjusters[i].setText("\\/");
             }
             timeAdjusters[i].addActionListener(this);
+            timeAdjusters[i].setMultiClickThreshhold(0);
             timeAdjusters[i].setFocusable(false);
             timeAdjusters[i].setFont(font);
             timeAdjusters[i].setBackground(backgroundColor);
@@ -110,9 +111,7 @@ public class PiTimer extends JPanel implements ActionListener {
             if(times[i]>timeMax[i]) {
                 times[i]=0;
             }
-            System.out.print(times[i]+" ");
         }
-        System.out.println();
     }
     private void updateDisplays() {
         updateTimes();
@@ -126,9 +125,14 @@ public class PiTimer extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object s=e.getSource();
+        boolean clickable;
+        try {
+            clickable=!timer.isRunning();
+        } catch (NullPointerException npe) {
+            clickable=true;
+        }
         for(int i=0;i<timeAdjusters.length;i++) {
-            if (s.equals(timeAdjusters[i])) {
-                System.err.println("Time Adjuster "+i);
+            if (s.equals(timeAdjusters[i])&&clickable) {
                 if(i>=timeDisplays.length) {
                     times[i-timeDisplays.length]--;
                 } else {
@@ -138,8 +142,8 @@ public class PiTimer extends JPanel implements ActionListener {
             }
         }
         if(s.equals(interfaceButtons[0])) {
-            if(interfaceButtons[2].getText().equals(iButtonStrings[3])) {
-                interfaceButtons[2].doClick();
+            if(!clickable) {
+                stop();
             }
             for(int i=0;i<times.length;i++) {
                 times[i]=0;
@@ -149,12 +153,11 @@ public class PiTimer extends JPanel implements ActionListener {
         if(s.equals(interfaceButtons[1])) {
             System.arraycopy(savedTimes, 0, times, 0, savedTimes.length);
             updateDisplays();
-            if(interfaceButtons[2].getText().equals(iButtonStrings[3])) {
-                interfaceButtons[2].doClick();
+            if(!clickable) {
+                stop();
             }
         }
         if(s.equals(interfaceButtons[2])) {
-            System.err.println(interfaceButtons[2].getText());
             boolean runnable=false;
             for(int i:times) {
                 if (i != 0) {
@@ -162,50 +165,49 @@ public class PiTimer extends JPanel implements ActionListener {
                     break;
                 }
             }
-            if (interfaceButtons[2].getText().equals(iButtonStrings[2])&&runnable) {
-                interfaceButtons[2].setText(iButtonStrings[3]);
-                System.arraycopy(times, 0, savedTimes, 0, times.length);
-                for(JButton i:timeAdjusters) {
-                    i.setEnabled(false);
-                }
-                timer=new Timer(0, e1 -> {
-                    if (startTime < 0) {
-                        startTime = System.currentTimeMillis();
-                    }
-                    elapsedTime=System.currentTimeMillis()-startTime;
-                    if(elapsedTime%1000==0) {
-                        times[times.length-1]--;
-                        updateTimes();
-                        for(int i=times.length-1;i>0;i--) {
-                            System.err.println(i+" "+times[i]+" "+timeMax[i]+" "+lastTimes[i]);
-                            if ((times[i] == timeMax[i]) && (lastTimes[i] == 0)) {
-                                times[i - 1]--;
-                                updateTimes();
-                            }
-                        }
-                        updateDisplays();
-                    }
-                    boolean done=true;
-                    for(int i:times) {
-                        if (i != 0) {
-                            done = false;
-                            break;
-                        }
-                    }
-                    if (done) {
-                        interfaceButtons[2].doClick();
-                    }
-                    System.arraycopy(times, 0, lastTimes, 0, times.length);
-                });
-                timer.start();
-            } else if (interfaceButtons[2].getText().equals(iButtonStrings[3])) {
-                interfaceButtons[2].setText(iButtonStrings[2]);
-                timer.stop();
-                for(JButton i:timeAdjusters) {
-                    i.setEnabled(true);
-                }
+            if (clickable&&runnable) {
+                start();
+            } else if (!clickable) {
+                stop();
             }
         }
+    }
+    private void start() {
+        interfaceButtons[2].setText(iButtonStrings[3]);
+        System.arraycopy(times, 0, savedTimes, 0, times.length);
+        timer=new Timer(0, e1 -> {
+            if (startTime < 0) {
+                startTime = System.currentTimeMillis();
+            }
+            elapsedTime=System.currentTimeMillis()-startTime;
+            if(elapsedTime%1000==0) {
+                times[times.length-1]--;
+                updateTimes();
+                for(int i=times.length-1;i>0;i--) {
+                    if ((times[i] == timeMax[i]) && (lastTimes[i] == 0)) {
+                        times[i - 1]--;
+                        updateTimes();
+                    }
+                }
+                updateDisplays();
+            }
+            boolean done=true;
+            for(int i:times) {
+                if (i != 0) {
+                    done = false;
+                    break;
+                }
+            }
+            if (done) {
+                stop();
+            }
+            System.arraycopy(times, 0, lastTimes, 0, times.length);
+        });
+        timer.start();
+    }
+    private void stop() {
+        interfaceButtons[2].setText(iButtonStrings[2]);
+        timer.stop();
     }
     //Main Method
     public static void main(String[] args) {
