@@ -1,5 +1,8 @@
 package PiTimer.Main;
 
+import com.pi4j.io.gpio.*;
+import com.pi4j.util.CommandArgumentParser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -42,7 +45,7 @@ public class Main extends JFrame implements ActionListener {
             }
         });
         //Pi Interfacing
-        /*GpioController gpio;
+        GpioController gpio;
         Pin[] pin=new Pin[timers.length];
         GpioPinDigitalOutput[] output=new GpioPinDigitalOutput[timers.length];
         try {
@@ -57,7 +60,7 @@ public class Main extends JFrame implements ActionListener {
             gpio=null;
             pin=null;
             output=null;
-        }*/
+        }
         spacer.setFocusable(false);
         spacer.setBackground(bgColor);
 
