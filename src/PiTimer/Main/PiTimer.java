@@ -1,10 +1,8 @@
-package Main;
+package PiTimer.Main;
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.util.CommandArgumentParser;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,9 +59,9 @@ public class PiTimer extends JPanel implements ActionListener {
         for(int i=0;i<timeAdjusters.length;i++) {
             timeAdjusters[i]=new JButton();
             if(i<timeAdjusters.length/2) {
-                timeAdjusters[i].setText("/\\");
+                timeAdjusters[i].setIcon(new ImageIcon("src/PiTimer/Resources/arrowUp.png"));
             } else {
-                timeAdjusters[i].setText("\\/");
+                timeAdjusters[i].setIcon(new ImageIcon("src/PiTimer/Resources/arrowDown.png"));
             }
             timeAdjusters[i].addActionListener(this);
             timeAdjusters[i].setFocusable(false);
@@ -228,8 +226,8 @@ public class PiTimer extends JPanel implements ActionListener {
         interfaceButtons[2].setText(iButtonStrings[2]);
         interfaceButtons[2].setBackground(startColor);
         interfaceButtons[2].setForeground(Color.getHSBColor(startColor.getRed(), startColor.getGreen(), startColor.getBlue()));
-        timer.stop();
         try {
+            timer.stop();
             output.high();
         } catch(Exception e) {}
     }
@@ -242,6 +240,9 @@ public class PiTimer extends JPanel implements ActionListener {
             }
         }
         return runnable;
+    }
+    public boolean isRunning() {
+        return interfaceButtons[2].getText().equals(iButtonStrings[3]);
     }
     public void setOutput(GpioPinDigitalOutput output) {
         this.output=output;

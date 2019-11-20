@@ -1,7 +1,4 @@
-package Main;
-
-import com.pi4j.io.gpio.*;
-import com.pi4j.util.CommandArgumentParser;
+package PiTimer.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,19 +9,38 @@ public class Main extends JFrame implements ActionListener {
     //Variable Declaration
     private static final String TITLE ="Timer", VERID="0.3";
     //UI Variables
-    PiTimer[] timers=new PiTimer[2];
-    JPanel spacer=new JPanel(), containerPane=new JPanel(), framePane=new JPanel();
-    JToggleButton start=new JToggleButton("Start");
+    private PiTimer[] timers=new PiTimer[2];
+    private JPanel spacer=new JPanel(),
+            containerPane=new JPanel(),
+            framePane=new JPanel();
+    private JToggleButton start=new JToggleButton("Start");
+    //Logic Variables
+    private Timer checkTimer;
     //Aesthetic Variables
     private Color bgColor=Color.decode("#000000"),
             fgColor=Color.decode("#FFFFFF"),
             startColor=Color.decode("#009900"),
             stopColor=Color.decode("#990000");
-    private Font font=new Font("Arial", Font.BOLD, 32);
+    private Font font=new Font("Comic Sans MS", Font.BOLD, 32);
     Main() {
         for(int i=0;i<timers.length;i++) {
             timers[i]=new PiTimer(bgColor, fgColor,startColor,stopColor,font);
         }
+        checkTimer=new Timer( 100, e -> {
+            if(!checkTimersRunning()) {
+                if(start.isSelected()) {
+                    start.setSelected(false);
+                    start.setBackground(startColor);
+                    start.setText("Start");
+                }
+            } else {
+                if(!start.isSelected()) {
+                    start.setSelected(true);
+                    start.setBackground(stopColor);
+                    start.setText("Stop");
+                }
+            }
+        });
         //Pi Interfacing
         /*GpioController gpio;
         Pin[] pin=new Pin[timers.length];
@@ -53,7 +69,7 @@ public class Main extends JFrame implements ActionListener {
         containerPane.setLayout(new GridLayout(3,1,5,5));
         containerPane.setFocusable(false);
         containerPane.setBackground(bgColor);
-        containerPane.add(new JLabel(new ImageIcon("/src/Resources/logo.png")));
+        containerPane.add(new JLabel(new ImageIcon("src/PiTimer/Resources/logo.png")));
         containerPane.add(spacer);
         containerPane.add(start);
 
@@ -72,27 +88,37 @@ public class Main extends JFrame implements ActionListener {
         setBackground(bgColor);
         setForeground(fgColor);
         add(framePane);
-        setVisible(true);
     }
     private void setTimers(boolean started) {
-        if(started) {
-            for(int i=0;i<timers.length;i++) {
-                if(timers[i].isRunnable()) {
+        if(started&&checkTimersRunnable()) {
+            for (int i = 0; i < timers.length; i++)
+                if (timers[i].isRunnable())
                     timers[i].start();
-                } else {
-                    start.setSelected(false);
-                    setTimers(false);
-                }
-            }
-        } else {
-            for (int i = 0; i < timers.length; i++) {
-                timers[i].stop();
+        } else for (int i = 0; i < timers.length; i++) {
+            timers[i].stop();
+        }
+    }
+    private boolean checkTimersRunnable() {
+        boolean returnValue=false;
+        for(int i=0;i<timers.length;i++) {
+            if(timers[i].isRunnable()) {
+                returnValue=true;
             }
         }
+        return returnValue;
+    }
+    private boolean checkTimersRunning() {
+        boolean returnValue=false;
+        for(int i=0;i<timers.length;i++) {
+            if(timers[i].isRunning()) {
+                returnValue=true;
+            }
+        }
+        return returnValue;
     }
     public void actionPerformed(ActionEvent evt) {
         if(evt.getSource()==start) {
-            if(start.isSelected()) {
+            if(start.isSelected()&&checkTimersRunnable()) {
                 setTimers(true);
                 start.setText("Stop");
                 start.setBackground(stopColor);
@@ -103,7 +129,7 @@ public class Main extends JFrame implements ActionListener {
             }
         }
     }
-    //Main
+    //PiTimer.Main
     public static void main(String[] args) {
         //Set UI
         try {
@@ -116,6 +142,8 @@ public class Main extends JFrame implements ActionListener {
         } catch (Exception e) {
             // If Nimbus is not available, you can set the GUI to another look and feel.
         }
-        new Main();
+        Main main=new Main();
+        main.checkTimer.start();
+        main.setVisible(true);
     }
 }
