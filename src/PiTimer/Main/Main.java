@@ -45,7 +45,7 @@ public class Main extends JFrame implements ActionListener {
             }
         });
         //Pi Interfacing
-        GpioController gpio;
+        /*GpioController gpio;
         Pin[] pin=new Pin[timers.length];
         GpioPinDigitalOutput[] output=new GpioPinDigitalOutput[timers.length];
         try {
@@ -60,7 +60,7 @@ public class Main extends JFrame implements ActionListener {
             gpio=null;
             pin=null;
             output=null;
-        }
+        }*/
         spacer.setFocusable(false);
         spacer.setBackground(bgColor);
 
@@ -135,7 +135,7 @@ public class Main extends JFrame implements ActionListener {
     //PiTimer.Main
     public static void main(String[] args) {
         //Set UI
-        /*try {
+        try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
@@ -144,7 +144,7 @@ public class Main extends JFrame implements ActionListener {
             }
         } catch (Exception e) {
             // If Nimbus is not available, you can set the GUI to another look and feel.
-        }*/
+        }
         Main main=new Main();
         main.checkTimer.start();
         main.setVisible(true);
