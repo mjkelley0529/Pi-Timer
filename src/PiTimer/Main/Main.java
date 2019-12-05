@@ -1,5 +1,6 @@
 package PiTimer.Main;
 
+import PiTimer.Resources.Resources;
 import com.pi4j.io.gpio.*;
 import com.pi4j.util.CommandArgumentParser;
 
@@ -45,7 +46,7 @@ public class Main extends JFrame implements ActionListener {
             }
         });
         //Pi Interfacing
-        GpioController gpio;
+        /*GpioController gpio;
         Pin[] pin=new Pin[timers.length];
         GpioPinDigitalOutput[] output=new GpioPinDigitalOutput[timers.length];
         try {
@@ -60,7 +61,7 @@ public class Main extends JFrame implements ActionListener {
             gpio=null;
             pin=null;
             output=null;
-        }
+        }*/
         spacer.setFocusable(false);
         spacer.setBackground(bgColor);
 
@@ -72,7 +73,7 @@ public class Main extends JFrame implements ActionListener {
         containerPane.setLayout(new GridLayout(3,1,5,5));
         containerPane.setFocusable(false);
         containerPane.setBackground(bgColor);
-        containerPane.add(new JLabel(new ImageIcon("src/PiTimer/Resources/logo.png")));
+        containerPane.add(new JLabel(Resources.logo));
         containerPane.add(spacer);
         containerPane.add(start);
 

@@ -1,5 +1,6 @@
 package PiTimer.Main;
 
+import PiTimer.Resources.Resources;
 import com.pi4j.io.gpio.*;
 
 import javax.swing.*;
@@ -59,9 +60,9 @@ public class PiTimer extends JPanel implements ActionListener {
         for(int i=0;i<timeAdjusters.length;i++) {
             timeAdjusters[i]=new JButton();
             if(i<timeAdjusters.length/2) {
-                timeAdjusters[i].setIcon(new ImageIcon("src/PiTimer/Resources/arrowUp.png"));
+                timeAdjusters[i].setIcon(Resources.arrowUp);
             } else {
-                timeAdjusters[i].setIcon(new ImageIcon("src/PiTimer/Resources/arrowDown.png"));
+                timeAdjusters[i].setIcon(Resources.arrowDown);
             }
             timeAdjusters[i].addActionListener(this);
             timeAdjusters[i].setFocusable(false);
